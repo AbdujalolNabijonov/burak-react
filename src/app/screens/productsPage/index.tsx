@@ -1,11 +1,11 @@
 import { Container } from "@mui/material"
 
-const FaqPage = (props: any) => {
+const ProductsPage = (props: any) => {
     return (
         <Container>
-            <h1>Faq Page</h1>
+            <h1>Products Page</h1>
         </Container>
     )
 }
 
-export default FaqPage
+export default ProductsPage

@@ -1,36 +1,35 @@
 import React from 'react';
 import { Button, Container, Stack } from '@mui/material';
-import { Link, Route, Switch } from 'react-router-dom';
-import HomePage from './screens/HomePage';
-import ProductPage from './screens/ProductPage';
+import { Link, Route, Switch, useLocation } from 'react-router-dom';
 import '../css/app.css';
+import ProductsPage from './screens/productsPage';
+import HelpPage from './screens/helpPage';
+import HomePage from './screens/homePage';
+import { HomeNavbar } from './components/headers/HomeNavbar';
+import { OtherNavbar } from './components/headers/OtherNavbar';
+import { Footer } from './components/footer';
 
 function App() {
+  //Initializations
+  const location = useLocation();
   return (
-    <Container>
-      <Stack flexDirection={'row'} justifyContent={"space-between"}>
-        <Link to="/">
-          Home Page
-        </Link>
-        <Link to="/product">
-          Product Page
-        </Link>
-        <Link to="/faq">
-          Faq Rage
-        </Link>
-      </Stack>
+    <>
+      {
+        location.pathname === "/" ? <HomeNavbar /> : <OtherNavbar />
+      }
       <Switch>
-        <Route path="/about">
-          <ProductPage />
+        <Route path="/help">
+          <HelpPage />
         </Route>
-        <Route path="/product">
-          <ProductPage />
+        <Route path="/products">
+          <ProductsPage />
         </Route>
         <Route path="/">
           <HomePage />
         </Route>
       </Switch>
-    </Container>
+      <Footer />
+    </>
   );
 }
 
