@@ -1,16 +1,35 @@
 import React from 'react';
+import { Button, Container, Stack } from '@mui/material';
+import { Link, Route, Switch } from 'react-router-dom';
+import HomePage from './screens/HomePage';
+import ProductPage from './screens/ProductPage';
 import '../css/app.css';
-import { Button, Container } from '@mui/material';
-import Typography from './MaterialTheme/typography';
-import { RippleBadge } from './MaterialTheme/styled';
 
 function App() {
   return (
     <Container>
-      <h1>Css framework Mui integration</h1>
-      <RippleBadge badgeContent={3}>
-        <Button variant={"contained"}> Contained</Button>
-      </RippleBadge>
+      <Stack flexDirection={'row'} justifyContent={"space-between"}>
+        <Link to="/">
+          Home Page
+        </Link>
+        <Link to="/product">
+          Product Page
+        </Link>
+        <Link to="/faq">
+          Faq Rage
+        </Link>
+      </Stack>
+      <Switch>
+        <Route path="/about">
+          <ProductPage />
+        </Route>
+        <Route path="/product">
+          <ProductPage />
+        </Route>
+        <Route path="/">
+          <HomePage />
+        </Route>
+      </Switch>
     </Container>
   );
 }
