@@ -11,6 +11,7 @@ import '../css/app.css';
 import "../css/navbar.css";
 import "../css/footer.css";
 import HomeNavbar from './components/headers/HomeNavbar';
+import OrdersPage from './screens/ordersPage';
 
 function App() {
   //Initializations
@@ -26,6 +27,9 @@ function App() {
         </Route>
         <Route path="/products">
           <ProductsPage />
+        </Route>
+        <Route path="/orders">
+          <OrdersPage />
         </Route>
         <Route path="/">
           <HomePage />
