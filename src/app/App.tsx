@@ -12,6 +12,7 @@ import "../css/navbar.css";
 import "../css/footer.css";
 import HomeNavbar from './components/headers/HomeNavbar';
 import OrdersPage from './screens/ordersPage';
+import UserPage from './screens/userPage';
 
 function App() {
   //Initializations
@@ -30,6 +31,12 @@ function App() {
         </Route>
         <Route path="/orders">
           <OrdersPage />
+        </Route>
+        <Route path="/member-page">
+          <UserPage />
+        </Route>
+        <Route path="/help">
+          <HelpPage />
         </Route>
         <Route path="/">
           <HomePage />
