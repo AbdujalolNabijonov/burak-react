@@ -15,6 +15,7 @@ import { Product } from "../../../lib/types/product.type"
 import { useEffect } from "react"
 import { popularDishesRetriver } from "./selector"
 import { createSelector } from "reselect"
+import { server } from "../../../lib/config"
 
 
 const dispatchAction = (dispatch: Dispatch) => ({
@@ -29,6 +30,10 @@ const popularDishesSelector = createSelector(
 const HomePage = (props: any) => {
     const { setPopularDishes } = dispatchAction(useDispatch());
     const popularDishes = useSelector(popularDishesSelector)
+
+    useEffect(()=>{
+        console.log(server)
+    }, [])
 
     return (
         <div className="homepage">
