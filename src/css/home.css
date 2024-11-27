@@ -188,8 +188,10 @@
 }
 
 .homepage .new-products-frame .product-detail .title {
-    width: 65px;
+    width: auto;
     font-weight: 500;
+    padding: 0 10px;
+    text-align: center;
 }
 
 .homepage .new-products-frame .product-detail .price {

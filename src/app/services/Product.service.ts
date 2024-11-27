@@ -11,7 +11,6 @@ class ProductService {
     public async getProducts(input: ProductInquiry): Promise<Product[]> {
         try {
             console.log("Method: getProducts");
-            console.log(this.server)
             let url = `${this.server}/product/all/?page=${input.page}&limit=${input.limit}&order=${input.order}`
             if (input.productCollection) url += `&productCollection=${input.productCollection}`
             if (input.search) url += `&search=${input.search}`;

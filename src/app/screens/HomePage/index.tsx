@@ -10,7 +10,7 @@ import "../../../css/home.css"
 //**REDUX 
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit"
-import { setPopularDishes } from "./slice"
+import { setNewDishes, setPopularDishes } from "./slice"
 import { Product } from "../../../lib/types/product.type"
 import { useEffect } from "react"
 import { popularDishesRetriver } from "./selector"
@@ -21,7 +21,8 @@ import { ProductCollection } from "../../../lib/enums/product.enum"
 
 
 const dispatchAction = (dispatch: Dispatch) => ({
-    setPopularDishes: (data: Product[]) => dispatch(setPopularDishes(data))
+    setPopularDishes: (products: Product[]) => dispatch(setPopularDishes(products)),
+    setNewDishes:(products:Product[])=>dispatch(setNewDishes(products))
 })
 
 const popularDishesSelector = createSelector(
@@ -30,8 +31,7 @@ const popularDishesSelector = createSelector(
 )
 
 const HomePage = (props: any) => {
-    const { setPopularDishes } = dispatchAction(useDispatch());
-    const popularDishes = useSelector(popularDishesSelector)
+    const { setPopularDishes, setNewDishes } = dispatchAction(useDispatch());
 
     useEffect(() => {
         const product = new ProductService();
@@ -46,6 +46,18 @@ const HomePage = (props: any) => {
             }
         )
             .then((data) => setPopularDishes(data))
+            .catch()
+
+        //New Dishes
+        product.getProducts(
+            {
+                page: 1,
+                limit: 4,
+                productCollection: ProductCollection.DISH,
+                order: "createdAt"
+            }
+        )
+            .then((data) => setNewDishes(data))
             .catch()
     }, [])
 

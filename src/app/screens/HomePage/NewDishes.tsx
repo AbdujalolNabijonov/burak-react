@@ -7,18 +7,24 @@ import Typography from "@mui/joy/Typography";
 import { CssVarsProvider } from "@mui/joy/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Divider from "../../components/divider";
+
+
+//Redux
+import { createSelector } from "reselect"
+import { newDishesRetriever } from "./selector";
 import { useSelector } from "react-redux";
-import { createSelector } from "reselect";
+import { Product } from "../../../lib/types/product.type";
+import { server } from "../../../lib/config";
+import { ProductCollection } from "../../../lib/enums/product.enum";
+
+const newDishesSelector = createSelector(
+    newDishesRetriever,
+    (newDishes) => ({ newDishes })
+)
 
 
 export default function NewDishes() {
-    const newDishes = [
-        { productName: "Kebab", productPrice: 12, productViews: 10, path: "/img/1.jpg" },
-        { productName: "Kebab", productPrice: 12, productViews: 10, path: "/img/1.jpg" },
-        { productName: "Kebab", productPrice: 12, productViews: 10, path: "/img/1.jpg" },
-        { productName: "Kebab", productPrice: 12, productViews: 10, path: "/img/1.jpg" },
-    ]
-
+    const { newDishes } = useSelector(newDishesSelector)
     return (
         <div className={"new-products-frame"}>
             <Container>
@@ -27,12 +33,13 @@ export default function NewDishes() {
                     <Stack className={"cards-frame"}>
                         <CssVarsProvider>
                             {newDishes.length !== 0 ? (
-                                newDishes.map((product: any, value:number) => {
-                                    const imagePath = product.path;
-                                    const sizeVolume = "DRINK"
+                                newDishes.map((product: Product) => {
+                                    const imagePath = `${server}/${product.productImages[0].replace(/\\/g, "/")}`;
+                                    const sizeVolume = product.productCollection === ProductCollection.DRINK
+                                        ? ProductCollection.DRINK : product.productCollection
                                     return (
                                         <Card
-                                            key={value}
+                                            key={product._id}
                                             variant="outlined"
                                             className={"card"}
                                         >
