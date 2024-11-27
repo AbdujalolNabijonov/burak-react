@@ -8,5 +8,5 @@ export interface AppScreenState {
 export interface HomePageState {
     popularDishes: Product[];
     newDishes: Product[];
-    activeUsers: Member[];
+    topUsers: Member[];
 }

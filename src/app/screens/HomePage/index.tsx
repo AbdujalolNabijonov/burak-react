@@ -8,33 +8,30 @@ import Events from "./Events";
 import "../../../css/home.css"
 
 //**REDUX 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit"
-import { setNewDishes, setPopularDishes } from "./slice"
+import { settopUsers, setNewDishes, setPopularDishes } from "./slice"
 import { Product } from "../../../lib/types/product.type"
 import { useEffect } from "react"
-import { popularDishesRetriver } from "./selector"
-import { createSelector } from "reselect"
-import { server } from "../../../lib/config"
 import ProductService from "../../services/Product.service"
 import { ProductCollection } from "../../../lib/enums/product.enum"
+import MemberService from "../../services/Member.service"
+import { Member } from "../../../lib/types/member.type"
 
 
 const dispatchAction = (dispatch: Dispatch) => ({
     setPopularDishes: (products: Product[]) => dispatch(setPopularDishes(products)),
-    setNewDishes:(products:Product[])=>dispatch(setNewDishes(products))
+    setNewDishes: (products: Product[]) => dispatch(setNewDishes(products)),
+    settopUsers: (members: Member[]) => dispatch(settopUsers(members))
 })
 
-const popularDishesSelector = createSelector(
-    popularDishesRetriver,
-    (popularDishes) => ({ popularDishes })
-)
 
 const HomePage = (props: any) => {
-    const { setPopularDishes, setNewDishes } = dispatchAction(useDispatch());
+    const { setPopularDishes, setNewDishes, settopUsers } = dispatchAction(useDispatch());
 
     useEffect(() => {
         const product = new ProductService();
+        const member = new MemberService();
 
         //popularDishes
         product.getProducts(
@@ -58,6 +55,11 @@ const HomePage = (props: any) => {
             }
         )
             .then((data) => setNewDishes(data))
+            .catch()
+
+        //Top users
+        member.getTopUsers()
+            .then(data => settopUsers(data))
             .catch()
     }, [])
 

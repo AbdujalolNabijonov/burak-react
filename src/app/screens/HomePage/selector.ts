@@ -13,7 +13,7 @@ export const newDishesRetriever = createSelector(
     (HomePage) => HomePage.newDishes
 )
 
-export const activeUsersRetriever = createSelector(
+export const topUsersRetriever = createSelector(
     homePageState,
-    (HomePage) => HomePage.activeUsers
+    (HomePage) => HomePage.topUsers
 )
