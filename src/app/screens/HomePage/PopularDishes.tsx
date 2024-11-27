@@ -10,14 +10,21 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 
 
+//Redux
+
+import { createSelector } from "reselect"
+import { popularDishesRetriver } from "./selector";
+import { useSelector } from "react-redux";
+import { Product } from "../../../lib/types/product.type";
+import { server } from "../../../lib/config";
+
+const popularDishesSelector = createSelector(
+    popularDishesRetriver,
+    (popularDishes) => ({ popularDishes })
+)
 
 export default function PopularDishes() {
-    const popularDishes: any[] = [
-        {productName:"Steak", productViews:20, productDesc:"This is delious meal", path:"/img/1.jpg"},
-        {productName:"Steak", productViews:20, productDesc:"This is delious meal", path:"/img/1.jpg"},
-        {productName:"Steak", productViews:20, productDesc:"This is delious meal", path:"/img/1.jpg"},
-        {productName:"Steak", productViews:20, productDesc:"This is delious meal", path:"/img/1.jpg"},
-    ]
+    const { popularDishes } = useSelector(popularDishesSelector)
 
     return (
         <div className="popular-dishes-frame">
@@ -26,8 +33,9 @@ export default function PopularDishes() {
                     <Box className="category-title">Popular Dishes</Box>
                     <Stack className="cards-frame">
                         {popularDishes.length !== 0 ? (
-                            popularDishes.map((product: any) => {
-                                const imagePath = product.path;
+                            popularDishes.map((product: Product) => {
+                                const imagePath = `${server}/${product.productImages[0].replace(/\\/g,"/")}`;
+                                console.log(imagePath)
                                 return (
                                     <CssVarsProvider key={product._id}>
                                         <Card className={"card"}>

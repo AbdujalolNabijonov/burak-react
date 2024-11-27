@@ -16,6 +16,8 @@ import { useEffect } from "react"
 import { popularDishesRetriver } from "./selector"
 import { createSelector } from "reselect"
 import { server } from "../../../lib/config"
+import ProductService from "../../services/Product.service"
+import { ProductCollection } from "../../../lib/enums/product.enum"
 
 
 const dispatchAction = (dispatch: Dispatch) => ({
@@ -31,8 +33,20 @@ const HomePage = (props: any) => {
     const { setPopularDishes } = dispatchAction(useDispatch());
     const popularDishes = useSelector(popularDishesSelector)
 
-    useEffect(()=>{
-        console.log(server)
+    useEffect(() => {
+        const product = new ProductService();
+
+        //popularDishes
+        product.getProducts(
+            {
+                page: 1,
+                limit: 4,
+                productCollection: ProductCollection.DISH,
+                order: "productViews"
+            }
+        )
+            .then((data) => setPopularDishes(data))
+            .catch()
     }, [])
 
     return (

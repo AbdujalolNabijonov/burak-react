@@ -27,12 +27,12 @@ export default function NewDishes() {
                     <Stack className={"cards-frame"}>
                         <CssVarsProvider>
                             {newDishes.length !== 0 ? (
-                                newDishes.map((product: any) => {
+                                newDishes.map((product: any, value:number) => {
                                     const imagePath = product.path;
                                     const sizeVolume = "DRINK"
                                     return (
                                         <Card
-                                            key={product._id}
+                                            key={value}
                                             variant="outlined"
                                             className={"card"}
                                         >
