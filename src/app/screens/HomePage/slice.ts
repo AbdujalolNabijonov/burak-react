@@ -23,6 +23,10 @@ const homePageSlice = createSlice({
     }
 })
 
-export const { setPopularDishes, setActiveUsers, setNewDishes } = homePageSlice.actions
+export const {
+    setPopularDishes,
+    setActiveUsers,
+    setNewDishes
+} = homePageSlice.actions
 const homePageReducer = homePageSlice.reducer;
 export default homePageReducer
