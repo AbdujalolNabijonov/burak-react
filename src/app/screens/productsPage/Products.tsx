@@ -11,11 +11,28 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 
 
+//Redux
+import { Dispatch } from "@reduxjs/toolkit";
+import { Product } from "../../../lib/types/product.type";
+import { setProducts } from "./slice";
+import { createSelector } from "reselect"
+import { productsRetriever } from "./selector";
+
+const actionDispatch = (dispatch: Dispatch) => ({
+    setProducts: (produts: Product[]) => dispatch(setProducts(produts))
+})
+
+const productsSelector = createSelector(
+    productsRetriever,
+    (products) => ({ products })
+)
+
+
 export default function Products(props: any) {
-    //Initialkizations
-    const products = [
-        {}
-    ]
+    const products:Product[] = []
+    useEffect(() => {
+
+    }, [])
     return (
         <div className={"products"}>
             <Container>

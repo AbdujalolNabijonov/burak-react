@@ -7,7 +7,7 @@ import "../../../css/products.css";
 
 export default function ProductsPage(props: any) {
     const products = useRouteMatch();
-
+    
     return (
         <div className={"products-page"}>
             <Switch>
