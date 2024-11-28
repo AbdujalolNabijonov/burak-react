@@ -14,5 +14,5 @@ export interface HomePageState {
 
 export interface ProductPageState {
     chosenProduct: Product | null;
-    products: Product[] | []
+    products: Product[]
 }
