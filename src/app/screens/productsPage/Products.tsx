@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductService from "../../services/Product.service";
 import { ProductCollection } from "../../../lib/enums/product.enum";
 import { server } from "../../../lib/config";
+import { useHistory } from "react-router-dom";
 
 const actionDispatch = (dispatch: Dispatch) => ({
     setProducts: (produts: Product[]) => dispatch(setProducts(produts))
@@ -33,6 +34,7 @@ const productsSelector = createSelector(
 
 
 export default function Products(props: any) {
+    const history = useHistory()
     const [productInquiry, setProductInquiry] = useState<ProductInquiry>(
         {
             order: "createdAt",
@@ -80,6 +82,10 @@ export default function Products(props: any) {
     const productSearchHandler = () => {
         productInquiry.search = searchText;
         setProductInquiry({ ...productInquiry })
+    }
+
+    const navigateHandler = (id: string) => {
+        history.push(`/products/${id}`)
     }
     return (
         <div className={"products"}>
@@ -191,6 +197,7 @@ export default function Products(props: any) {
                                         <Stack
                                             key={product._id}
                                             className={"product-card"}
+                                            onClick={()=>navigateHandler(product._id)}
                                         >
                                             <Stack
                                                 className={"product-img"}

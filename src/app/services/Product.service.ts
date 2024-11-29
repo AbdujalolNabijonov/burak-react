@@ -22,6 +22,17 @@ class ProductService {
             throw err
         }
     }
-}
 
+    public async getProduct(id: string): Promise<Product> {
+        try {
+            const url = `${this.server}/product/${id}`;
+            const product = await fetch(url, { method: "GET" });
+
+            return product.json()
+        } catch (err: any) {
+            console.log(`Error: getProduct, ${err.message}`);
+            throw err
+        }
+    }
+}
 export default ProductService

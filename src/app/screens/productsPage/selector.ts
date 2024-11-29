@@ -12,3 +12,8 @@ export const productsRetriever = createSelector(
     productPageState,
     (ProductPage) => ProductPage.products
 )
+
+export const restaurantRetriever = createSelector(
+    productPageState,
+    (ProductPage)=>ProductPage.restaurant
+)

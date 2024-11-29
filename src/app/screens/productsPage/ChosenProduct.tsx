@@ -10,10 +10,61 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper";
+import { Dispatch } from "@reduxjs/toolkit";
+import { Product } from "../../../lib/types/product.type";
+import { setChosenProduct, setRestaurant } from "./slice";
+
+
+//Redux
+import { createSelector } from "reselect"
+import { chosenProductRetriever, restaurantRetriever } from "./selector";
+import ProductService from "../../services/Product.service";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { server } from "../../../lib/config";
+import { Member } from "../../../lib/types/member.type";
+import MemberService from "../../services/Member.service";
+
+const actionDispatch = (dispatch: Dispatch) => ({
+    setChosenProduct: (product: Product) => dispatch(setChosenProduct(product)),
+    setRestaurant: (restaurant: Member) => dispatch(setRestaurant(restaurant))
+})
+
+const chosenProductSelector = createSelector(
+    chosenProductRetriever,
+    (chosenProduct) => ({ chosenProduct })
+)
+
+const restaurantSelector = createSelector(
+    restaurantRetriever,
+    (restaurant) => ({ restaurant })
+)
 
 export default function ChosenProduct(props: any) {
 
-    const chosenProduct: any = { productImages: ["/img/1.jpg"], }
+    const { productId } = useParams<{ productId: string }>();
+    const { setChosenProduct, setRestaurant } = actionDispatch(useDispatch());
+    const { chosenProduct } = useSelector(chosenProductSelector)
+    const { restaurant } = useSelector(restaurantSelector)
+
+    useEffect(() => {
+        const productService = new ProductService();
+        const memberService = new MemberService();
+        
+        window.document.addEventListener("scroll", ()=>{});
+        
+
+        productService
+            .getProduct(productId)
+            .then((product) => setChosenProduct(product))
+            .catch()
+        
+        memberService
+        .getRestaurant()
+        .then((member:Member)=>setRestaurant(member))
+        .catch()
+    }, [])
+
     if (!chosenProduct) return null;
     return (
         <div className={"chosen-product"}>
@@ -28,7 +79,7 @@ export default function ChosenProduct(props: any) {
                         className="swiper-area"
                     >
                         {chosenProduct?.productImages.map((ele: string, index: number) => {
-                            const imagePath = ele;
+                            const imagePath = `${server}/${ele}`;
                             return (
                                 <SwiperSlide key={index}>
                                     <img className="slider-image" src={imagePath} />
@@ -42,8 +93,8 @@ export default function ChosenProduct(props: any) {
                         <strong className={"product-name"}>
                             {chosenProduct?.productName}
                         </strong>
-                        <span className={"resto-name"}>Burak</span>
-                        <span className={"resto-name"}>01032011222</span>
+                        <span className={"resto-name"}>{restaurant?.memberNick}</span>
+                        <span className={"resto-name"}>{restaurant?.memberPhone}</span>
                         <Box className={"rating-box"}>
                             <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
                             <div className={"evaluation-box"}>
