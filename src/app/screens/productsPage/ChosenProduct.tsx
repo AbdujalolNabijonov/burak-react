@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { server } from "../../../lib/config";
 import { Member } from "../../../lib/types/member.type";
 import MemberService from "../../services/Member.service";
+import { CartItem } from "../../../lib/types/search.type";
 
 const actionDispatch = (dispatch: Dispatch) => ({
     setChosenProduct: (product: Product) => dispatch(setChosenProduct(product)),
@@ -40,8 +41,12 @@ const restaurantSelector = createSelector(
     (restaurant) => ({ restaurant })
 )
 
-export default function ChosenProduct(props: any) {
+interface ChosenProductProps {
+    onAdd: (item: CartItem) => void
+}
 
+export default function ChosenProduct(props: ChosenProductProps) {
+    const { onAdd } = props;
     const { productId } = useParams<{ productId: string }>();
     const { setChosenProduct, setRestaurant } = actionDispatch(useDispatch());
     const { chosenProduct } = useSelector(chosenProductSelector)
@@ -50,19 +55,19 @@ export default function ChosenProduct(props: any) {
     useEffect(() => {
         const productService = new ProductService();
         const memberService = new MemberService();
-        
-        window.document.addEventListener("scroll", ()=>{});
-        
+
+        window.document.addEventListener("scroll", () => { });
+
 
         productService
             .getProduct(productId)
             .then((product) => setChosenProduct(product))
             .catch()
-        
+
         memberService
-        .getRestaurant()
-        .then((member:Member)=>setRestaurant(member))
-        .catch()
+            .getRestaurant()
+            .then((member: Member) => setRestaurant(member))
+            .catch()
     }, [])
 
     if (!chosenProduct) return null;
@@ -117,6 +122,16 @@ export default function ChosenProduct(props: any) {
                         <div className={"button-box"}>
                             <Button
                                 variant="contained"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onAdd({
+                                        _id: chosenProduct._id,
+                                        name: chosenProduct.productName,
+                                        price: chosenProduct.productPrice,
+                                        quantity: 1,
+                                        image: chosenProduct.productImages[0]
+                                    })
+                                }}
                             >
                                 Add To Basket
                             </Button>

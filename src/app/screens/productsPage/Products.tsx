@@ -22,6 +22,7 @@ import ProductService from "../../services/Product.service";
 import { ProductCollection } from "../../../lib/enums/product.enum";
 import { server } from "../../../lib/config";
 import { useHistory } from "react-router-dom";
+import { CartItem } from "../../../lib/types/search.type";
 
 const actionDispatch = (dispatch: Dispatch) => ({
     setProducts: (produts: Product[]) => dispatch(setProducts(produts))
@@ -32,8 +33,12 @@ const productsSelector = createSelector(
     (products) => ({ products })
 )
 
+interface ProductsProps {
+    onAdd: (Item: CartItem) => void
+}
 
-export default function Products(props: any) {
+export default function Products(props: ProductsProps) {
+    const { onAdd } = props
     const history = useHistory()
     const [productInquiry, setProductInquiry] = useState<ProductInquiry>(
         {
@@ -197,7 +202,7 @@ export default function Products(props: any) {
                                         <Stack
                                             key={product._id}
                                             className={"product-card"}
-                                            onClick={()=>navigateHandler(product._id)}
+                                            onClick={() => navigateHandler(product._id)}
                                         >
                                             <Stack
                                                 className={"product-img"}
@@ -206,6 +211,16 @@ export default function Products(props: any) {
                                                 <div className={"product-sale"}>{sizeVolume}</div>
                                                 <Button
                                                     className={"shop-btn"}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onAdd({
+                                                            _id: product._id,
+                                                            name: product.productName,
+                                                            price: product.productPrice,
+                                                            quantity: 1,
+                                                            image: product.productImages[0]
+                                                        })
+                                                    }}
                                                 >
                                                     <img
                                                         src={"/icons/shopping-cart.svg"}

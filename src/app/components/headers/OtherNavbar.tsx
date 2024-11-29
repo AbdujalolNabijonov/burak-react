@@ -11,10 +11,25 @@ import {
 import { NavLink } from "react-router-dom";
 import Basket from "./Basket";
 import { Logout } from "@mui/icons-material";
+import { CartItem } from "../../../lib/types/search.type";
 
+interface OtherNavbarProps {
+    cartItems: CartItem[];
+    onAdd: (item: CartItem) => void
+    onRemove: (item: CartItem) => void;
+    onDelete: (item: CartItem) => void;
+    onDeleteAll: () => void
+}
 
-export default function OtherNavbar(props: any) {
+export default function OtherNavbar(props: OtherNavbarProps) {
     //Instalizations
+    const {
+        cartItems,
+        onAdd,
+        onRemove,
+        onDelete,
+        onDeleteAll
+    } = props
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>();
     const open = Boolean(anchorEl)
     const authMember = null
@@ -56,7 +71,13 @@ export default function OtherNavbar(props: any) {
                                 Help
                             </NavLink>
                         </Box>
-                        <Basket />
+                        <Basket
+                            cartItems={cartItems}
+                            onAdd={onAdd}
+                            onRemove={onRemove}
+                            onDelete={onDelete}
+                            onDeleteAll={onDeleteAll}
+                        />
 
                         {!authMember ? (
                             <Box>

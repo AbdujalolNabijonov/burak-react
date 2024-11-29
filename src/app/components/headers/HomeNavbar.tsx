@@ -10,12 +10,25 @@ import {
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import Basket from "./Basket";
+import { CartItem } from "../../../lib/types/search.type";
 
+interface HomeNavbarProps {
+    cartItems: CartItem[];
+    onAdd: (item: CartItem) => void;
+    onRemove: (item: CartItem) => void;
+    onDelete: (item: CartItem) => void;
+    onDeleteAll: () => void
+}
 
-
-export default function HomeNavbar(props: any) {
+export default function HomeNavbar(props: HomeNavbarProps) {
     const authMember = null
-
+    const {
+        cartItems,
+        onAdd,
+        onRemove,
+        onDelete,
+        onDeleteAll
+    } = props
     return (
         <div className="home-navbar">
             <Container className="navbar-container">
@@ -55,15 +68,21 @@ export default function HomeNavbar(props: any) {
                                 Help
                             </NavLink>
                         </Box>
-                        
-                        <Basket/>
+
+                        <Basket
+                            cartItems={cartItems}
+                            onAdd={onAdd}
+                            onRemove={onRemove}
+                            onDelete={onDelete}
+                            onDeleteAll={onDeleteAll}
+                        />
 
                         {!authMember ? (
                             <Box>
                                 <Button
                                     variant="contained"
                                     className="login-button"
-                                    >
+                                >
                                     Login
                                 </Button>
                             </Box>
