@@ -11,13 +11,16 @@ import {
 import { NavLink } from "react-router-dom";
 import Basket from "./Basket";
 import { CartItem } from "../../../lib/types/search.type";
+import { T } from "../../../lib/types/common.type";
 
 interface HomeNavbarProps {
     cartItems: CartItem[];
     onAdd: (item: CartItem) => void;
     onRemove: (item: CartItem) => void;
     onDelete: (item: CartItem) => void;
-    onDeleteAll: () => void
+    onDeleteAll: () => void;
+    setLoginOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setSignupOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function HomeNavbar(props: HomeNavbarProps) {
@@ -27,8 +30,12 @@ export default function HomeNavbar(props: HomeNavbarProps) {
         onAdd,
         onRemove,
         onDelete,
-        onDeleteAll
+        onDeleteAll,
+        setLoginOpen,
+        setSignupOpen
     } = props
+
+
     return (
         <div className="home-navbar">
             <Container className="navbar-container">
@@ -82,6 +89,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
                                 <Button
                                     variant="contained"
                                     className="login-button"
+                                    onClick={() => { setLoginOpen(true) }}
                                 >
                                     Login
                                 </Button>
@@ -108,6 +116,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
                                 <Button
                                     variant={"contained"}
                                     className={"signup-button"}
+                                    onClick={() => setSignupOpen(true)}
                                 >
                                     SIGN UP
                                 </Button>

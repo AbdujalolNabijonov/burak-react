@@ -14,10 +14,14 @@ import HomeNavbar from './components/headers/HomeNavbar';
 import OrdersPage from './screens/ordersPage';
 import UserPage from './screens/userPage';
 import useBasket from './hooks/useBasket';
+import AuthenticationModal from './components/auth';
 
 function App() {
   //Initializations
   const location = useLocation();
+  const [loginOpen, setLoginOpen] = useState<boolean>(false);
+  const [signupOpen, setSignupOpen] = useState<boolean>(false);
+
   const {
     cartItems,
     onAdd,
@@ -25,6 +29,13 @@ function App() {
     onDelete,
     onDeleteAll
   } = useBasket()
+
+  const handleSignupClose = () => {
+    setSignupOpen(false)
+  }
+  const handleLoginClose = () => {
+    setLoginOpen(false)
+  }
 
 
   return (
@@ -37,6 +48,8 @@ function App() {
             onRemove={onRemove}
             onDelete={onDelete}
             onDeleteAll={onDeleteAll}
+            setLoginOpen={setLoginOpen}
+            setSignupOpen={setSignupOpen}
           />
           : <OtherNavbar
             onAdd={onAdd}
@@ -44,6 +57,7 @@ function App() {
             onRemove={onRemove}
             onDelete={onDelete}
             onDeleteAll={onDeleteAll}
+            setLoginOpen={setLoginOpen}
           />
       }
       <Switch>
@@ -70,6 +84,13 @@ function App() {
         </Route>
       </Switch>
       <Footer />
+
+      <AuthenticationModal
+        signupOpen={signupOpen}
+        loginOpen={loginOpen}
+        handleLoginClose={handleLoginClose}
+        handleSignupClose={handleSignupClose}
+      />
     </>
   );
 }
