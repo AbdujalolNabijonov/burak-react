@@ -9,8 +9,36 @@ import ProcessOrders from "./ProcessOrders";
 import FinishedOrders from "./FinishedOrders";
 import "../../../css/orders.css"
 
+
+//REDUX
+import { Dispatch } from "@reduxjs/toolkit";
+import { Order, OrderInquiry } from "../../../lib/types/order.type";
+import { setFinishedOrders, setPausedOrders, setProcessOrders } from "./slice";
+import { useDispatch } from "react-redux";
+import { OrderStatus } from "../../../lib/enums/order.enum";
+
+const actionsDispatch = (dispatch: Dispatch) => ({
+    setPausedOrders: (orders: Order[]) => dispatch(setPausedOrders(orders)),
+    setProcessOrders: (orders: Order[]) => dispatch(setProcessOrders(orders)),
+    setFinishedOrders: (orders: Order[]) => dispatch(setFinishedOrders(orders))
+})
+
 export default function OrdersPage() {
     const [value, setValue] = useState("1");
+    const [orderInquiry, setOrderInquiry] = useState<OrderInquiry>({
+        page: 1,
+        limit: 3,
+        orderStatus: OrderStatus.PAUSE
+    })
+    const {
+        setPausedOrders,
+        setProcessOrders,
+        setFinishedOrders
+    } = actionsDispatch(useDispatch())
+
+    useEffect(() => {
+
+    }, [])
 
     /** HANDLERS **/
 
