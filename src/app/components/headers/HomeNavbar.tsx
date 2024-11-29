@@ -12,6 +12,7 @@ import { NavLink } from "react-router-dom";
 import Basket from "./Basket";
 import { CartItem } from "../../../lib/types/search.type";
 import { T } from "../../../lib/types/common.type";
+import { useGlobals } from "../../hooks/useGlobals";
 
 interface HomeNavbarProps {
     cartItems: CartItem[];
@@ -24,7 +25,7 @@ interface HomeNavbarProps {
 }
 
 export default function HomeNavbar(props: HomeNavbarProps) {
-    const authMember = null
+    const { authMember } = useGlobals()
     const {
         cartItems,
         onAdd,

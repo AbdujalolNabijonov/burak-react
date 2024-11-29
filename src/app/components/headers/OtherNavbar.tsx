@@ -13,6 +13,7 @@ import Basket from "./Basket";
 import { Logout } from "@mui/icons-material";
 import { CartItem } from "../../../lib/types/search.type";
 import { T } from "../../../lib/types/common.type";
+import { useGlobals } from "../../hooks/useGlobals";
 
 interface OtherNavbarProps {
     cartItems: CartItem[];
@@ -34,7 +35,7 @@ export default function OtherNavbar(props: OtherNavbarProps) {
     } = props
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>();
     const open = Boolean(anchorEl)
-    const authMember = null
+    const { authMember } = useGlobals()
 
     return (
         <div className="other-navbar">

@@ -11,6 +11,7 @@ import { LoginInput, MemberInput } from "../../../lib/types/member.type";
 import { Message } from "../../../lib/config";
 import { sweetErrorHandling, sweetTopSmallSuccessAlert } from "../../../lib/sweetAlert";
 import MemberService from "../../services/Member.service";
+import { useGlobals } from "../../hooks/useGlobals";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -45,6 +46,7 @@ interface AuthenticationModalProps {
 export default function AuthenticationModal(props: AuthenticationModalProps) {
   const { signupOpen, loginOpen, handleSignupClose, handleLoginClose } = props;
   const classes = useStyles();
+  const { setAuthMember } = useGlobals()
 
   const [userName, setUserName] = useState<string>("")
   const [phone, setPhone] = useState<string>("")
@@ -76,6 +78,7 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
         const member = await memberService.signup(memberInput);
         localStorage.setItem("member", JSON.stringify(member))
 
+        setAuthMember(member)
         handleSignupClose();
         await sweetTopSmallSuccessAlert("Successfully sign up!", 2000)
       } else {
@@ -98,7 +101,7 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
         const memberService = new MemberService();
         const member = await memberService.login(memberInput);
         localStorage.setItem("member", JSON.stringify(member))
-        
+        setAuthMember(member)
         handleLoginClose()
         await sweetTopSmallSuccessAlert("Successfully log in!", 2000)
       }

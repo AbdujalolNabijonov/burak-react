@@ -8,17 +8,20 @@ import reportWebVitals from './reportWebVitals';
 import './css/index.css';
 import theme from './app/MaterialTheme';
 import { BrowserRouter as Router } from "react-router-dom"
+import ContextProvider from './app/context/ContextProvider';
 
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Router>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <App />
-        </ThemeProvider>
-      </Router>
+      <ContextProvider>
+        <Router>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
+        </Router>
+      </ContextProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
