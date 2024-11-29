@@ -15,12 +15,16 @@ import OrdersPage from './screens/ordersPage';
 import UserPage from './screens/userPage';
 import useBasket from './hooks/useBasket';
 import AuthenticationModal from './components/auth';
+import { sweetErrorHandling, sweetTopSuccessAlert } from '../lib/sweetAlert';
+import MemberService from './services/Member.service';
 
 function App() {
   //Initializations
   const location = useLocation();
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
   const [signupOpen, setSignupOpen] = useState<boolean>(false);
+  const [anchorEl, setAnchoEl] = useState<HTMLElement | null>(null);
+
 
   const {
     cartItems,
@@ -37,6 +41,25 @@ function App() {
     setLoginOpen(false)
   }
 
+  const handleOpenLoginMenu = (e: React.MouseEvent<HTMLElement>) => {
+    setAnchoEl(e.currentTarget)
+  }
+
+  const handleCloseLoginMenu = () => { setAnchoEl(null) }
+
+  const handleLogoutRequest = async() => {
+    try {
+      const memberService=new MemberService();
+
+      await memberService.logout();
+
+      handleCloseLoginMenu()
+      await sweetTopSuccessAlert("Successfully log out!", 700)
+      window.location.reload()
+    } catch (err: any) {
+      await sweetErrorHandling(err)
+    }
+  }
 
   return (
     <>
@@ -50,6 +73,10 @@ function App() {
             onDeleteAll={onDeleteAll}
             setLoginOpen={setLoginOpen}
             setSignupOpen={setSignupOpen}
+            anchorEl={anchorEl}
+            handleOpenLoginMenu={handleOpenLoginMenu}
+            handleCloseLoginMenu={handleCloseLoginMenu}
+            handleLogoutRequest={handleLogoutRequest}
           />
           : <OtherNavbar
             onAdd={onAdd}
@@ -58,6 +85,10 @@ function App() {
             onDelete={onDelete}
             onDeleteAll={onDeleteAll}
             setLoginOpen={setLoginOpen}
+            anchorEl={anchorEl}
+            handleOpenLoginMenu={handleOpenLoginMenu}
+            handleCloseLoginMenu={handleCloseLoginMenu}
+            handleLogoutRequest={handleLogoutRequest}
           />
       }
       <Switch>

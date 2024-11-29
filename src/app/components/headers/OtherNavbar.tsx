@@ -14,6 +14,7 @@ import { Logout } from "@mui/icons-material";
 import { CartItem } from "../../../lib/types/search.type";
 import { T } from "../../../lib/types/common.type";
 import { useGlobals } from "../../hooks/useGlobals";
+import { server } from "../../../lib/config";
 
 interface OtherNavbarProps {
     cartItems: CartItem[];
@@ -22,6 +23,10 @@ interface OtherNavbarProps {
     onDelete: (item: CartItem) => void;
     onDeleteAll: () => void;
     setLoginOpen: React.Dispatch<React.SetStateAction<boolean>>
+    anchorEl: HTMLElement | null;
+    handleOpenLoginMenu: (e: React.MouseEvent<HTMLElement>) => void
+    handleCloseLoginMenu: () => void;
+    handleLogoutRequest: () => void;
 }
 
 export default function OtherNavbar(props: OtherNavbarProps) {
@@ -31,10 +36,13 @@ export default function OtherNavbar(props: OtherNavbarProps) {
         onAdd,
         onRemove,
         onDelete,
-        onDeleteAll
+        onDeleteAll,
+        setLoginOpen,
+        handleCloseLoginMenu,
+        handleOpenLoginMenu,
+        handleLogoutRequest,
+        anchorEl
     } = props
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>();
-    const open = Boolean(anchorEl)
     const { authMember } = useGlobals()
 
     return (
@@ -87,6 +95,9 @@ export default function OtherNavbar(props: OtherNavbarProps) {
                                 <Button
                                     variant="contained"
                                     className="login-button"
+                                    onClick={() => {
+                                        setLoginOpen(true)
+                                    }}
                                 >
                                     Login
                                 </Button>
@@ -94,47 +105,49 @@ export default function OtherNavbar(props: OtherNavbarProps) {
                         ) : (
                             <img
                                 className="user-avatar"
-                                src={"/icons/default-user.svg"}
+                                src={authMember.memberImage ? `${server}/${authMember.memberImage}` : "/icons/default-user.svg"}
                                 aria-haspopup={"true"}
+                                onClick={handleOpenLoginMenu}
                             />
                         )}
-
                         <Menu
-                            anchorEl={anchorEl}
                             id="account-menu"
-                            open={open}
+                            open={Boolean(anchorEl)}
+                            anchorEl={anchorEl}
+                            onClick={handleCloseLoginMenu}
+                            onClose={handleCloseLoginMenu}
                             PaperProps={{
                                 elevation: 0,
                                 sx: {
-                                    overflow: "visible",
-                                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                                    overflow: 'visible',
+                                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                                     mt: 1.5,
-                                    "& .MuiAvatar-root": {
+                                    '& .MuiAvatar-root': {
                                         width: 32,
                                         height: 32,
                                         ml: -0.5,
                                         mr: 1,
                                     },
-                                    "&:before": {
+                                    '&:before': {
                                         content: '""',
-                                        display: "block",
-                                        position: "absolute",
+                                        display: 'block',
+                                        position: 'absolute',
                                         top: 0,
                                         right: 14,
                                         width: 10,
                                         height: 10,
-                                        bgcolor: "background.paper",
-                                        transform: "translateY(-50%) rotate(45deg)",
+                                        bgcolor: 'background.paper',
+                                        transform: 'translateY(-50%) rotate(45deg)',
                                         zIndex: 0,
                                     },
                                 },
                             }}
-                            transformOrigin={{ horizontal: "right", vertical: "top" }}
-                            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                         >
-                            <MenuItem>
+                            <MenuItem onClick={handleLogoutRequest}>
                                 <ListItemIcon>
-                                    <Logout fontSize="small" style={{ color: "blue" }} />
+                                    <Logout fontSize="small" style={{ color: 'blue' }} />
                                 </ListItemIcon>
                                 Logout
                             </MenuItem>
