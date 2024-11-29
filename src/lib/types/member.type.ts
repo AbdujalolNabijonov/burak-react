@@ -25,3 +25,8 @@ export interface MemberInput {
     memberAddress?: string;
     memberDesc?: string
 }
+
+export interface LoginInput {
+    memberNick: string;
+    memberPassword: string
+}

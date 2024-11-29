@@ -1,6 +1,6 @@
 import axios from "axios";
 import { server } from "../../lib/config";
-import { Member } from "../../lib/types/member.type";
+import { LoginInput, Member, MemberInput } from "../../lib/types/member.type";
 
 class MemberService {
     private readonly server;
@@ -29,6 +29,31 @@ class MemberService {
             return result.data
         } catch (err: any) {
             console.log(`Error: getRestaurant, ${err.message}`);
+            throw err
+        }
+    }
+
+    public async signup(memberInput: MemberInput): Promise<Member> {
+        try {
+            const url = `${this.server}/member/signup`;
+            const response = await axios.post(url, memberInput, { withCredentials: true });
+
+            return response.data
+        } catch (err: any) {
+            console.log(`Error: signup, ${err.message}`)
+            throw err
+        }
+    }
+
+    public async login(input: LoginInput): Promise<Member> {
+        try {
+            const url = `${this.server}/member/login`;
+
+            const response = await axios.post(url, input, { withCredentials: true });
+
+            return response.data
+        } catch (err: any) {
+            console.log(`Error: login, ${err.message}`)
             throw err
         }
     }
