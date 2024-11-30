@@ -1,6 +1,6 @@
 import axios from "axios";
 import { server } from "../../lib/config";
-import { Order, OrderInquiry } from "../../lib/types/order.type";
+import { Order, OrderInquiry, UpdateOrderInput } from "../../lib/types/order.type";
 import { CartItem } from "../../lib/types/search.type";
 
 class OrderService {
@@ -38,6 +38,17 @@ class OrderService {
             return response.data
         } catch (err: any) {
             console.log(`Error: getOrders, ${err.message}`);
+            throw err
+        }
+    }
+
+    public async updateOrder(input: UpdateOrderInput): Promise<any> {
+        try {
+            const url = `${this.path}/order/update`;
+            const response = await axios.post(url, input, { withCredentials: true });
+            return response.data;
+        } catch (err: any) {
+            console.log(`Error: updateOrder, ${err.message}`);
             throw err
         }
     }

@@ -3,7 +3,9 @@ import { Member } from "../../lib/types/member.type";
 
 export interface GlobalsInterface {
     authMember: Member | null;
-    setAuthMember: (member: Member) => void
+    setAuthMember: (member: Member) => void;
+    rebuildOrderData: Date;
+    setRebuildOrderData: (input: Date) => void
 }
 
 export const GlobalContext = createContext<GlobalsInterface | undefined>(undefined);

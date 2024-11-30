@@ -1,15 +1,22 @@
+
+import React from "react"
 import { TabPanel } from "@mui/lab";
 import { Box, Button, Stack } from "@mui/material";
 import moment from "moment";
+import { Order, OrderItem, UpdateOrderInput } from "../../../lib/types/order.type";
+import { Product } from "../../../lib/types/product.type";
+import { Message, server } from "../../../lib/config";
+import { T } from "../../../lib/types/common.type";
 
 
 //REDUX
 import { createSelector } from "reselect"
 import { processOrdersRetriever } from "./selector";
 import { useSelector } from "react-redux";
-import { Order, OrderItem } from "../../../lib/types/order.type";
-import { Product } from "../../../lib/types/product.type";
-import { server } from "../../../lib/config";
+import { sweetErrorHandling } from "../../../lib/sweetAlert";
+import { useGlobals } from "../../hooks/useGlobals";
+import { OrderStatus } from "../../../lib/enums/order.enum";
+import OrderService from "../../services/Order.service";
 
 const processOrdersSelector = createSelector(
     processOrdersRetriever,
@@ -23,7 +30,26 @@ interface ProcessOrdersProps {
 export default function ProcessOrders(props: ProcessOrdersProps) {
     const { setValue } = props;
     const { processOrders } = useSelector(processOrdersSelector)
+    const { authMember, setRebuildOrderData } = useGlobals()
+    //Handlers
+    const onFinishHandler = async (e: T) => {
+        try {
+            if (!authMember) throw new Error(Message.error3);
+            const orderId = e.currentTarget.value as string;
+            const input: UpdateOrderInput = {
+                orderId,
+                orderStatus: OrderStatus.FINISH
+            }
 
+            const orderService = new OrderService();
+            await orderService.updateOrder(input);
+
+            setRebuildOrderData(new Date())
+            setValue("3")
+        } catch (err: any) {
+            await sweetErrorHandling(err)
+        }
+    }
     return (
         <TabPanel value={"2"}>
             <Stack>
@@ -73,6 +99,7 @@ export default function ProcessOrders(props: ProcessOrdersProps) {
                                     value={order._id}
                                     variant="contained"
                                     className={"verify-button"}
+                                    onClick={onFinishHandler}
                                 >
                                     Verify to Fulfil
                                 </Button>

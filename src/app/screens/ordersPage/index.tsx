@@ -19,9 +19,11 @@ import { useDispatch } from "react-redux";
 import { OrderStatus } from "../../../lib/enums/order.enum";
 import OrderService from "../../services/Order.service";
 import { useGlobals } from "../../hooks/useGlobals";
-import { server } from "../../../lib/config";
+import { Message, server } from "../../../lib/config";
 import { MemberType } from "../../../lib/enums/member.enum";
 import { useHistory } from "react-router-dom";
+import { sweetErrorHandling } from "../../../lib/sweetAlert";
+import { T } from "../../../lib/types/common.type";
 
 const actionsDispatch = (dispatch: Dispatch) => ({
     setPausedOrders: (orders: Order[]) => dispatch(setPausedOrders(orders)),
@@ -37,6 +39,7 @@ export default function OrdersPage() {
         orderStatus: OrderStatus.PAUSE
     })
     const history = useHistory();
+    const { rebuildOrderData } = useGlobals()
 
     const {
         setPausedOrders,
@@ -47,30 +50,32 @@ export default function OrdersPage() {
     const { authMember } = useGlobals()
 
     useEffect(() => {
-        if (!authMember) history.push("/");
-    }, [])
+        if (!authMember) {
+            history.push("/")
+        } else {
+            const orderSrevice = new OrderService();
+            orderSrevice
+                .getOrders({ ...orderInquiry, orderStatus: OrderStatus.PAUSE })
+                .then((orders: Order[]) => setPausedOrders(orders))
+                .catch()
 
-    useEffect(() => {
+            orderSrevice
+                .getOrders({ ...orderInquiry, orderStatus: OrderStatus.PROCESS })
+                .then((orders: Order[]) => setProcessOrders(orders))
+                .catch()
 
-        const orderSrevice = new OrderService();
-        orderSrevice
-            .getOrders({ ...orderInquiry, orderStatus: OrderStatus.PAUSE })
-            .then((orders: Order[]) => setPausedOrders(orders))
-            .catch()
-
-        orderSrevice
-            .getOrders({ ...orderInquiry, orderStatus: OrderStatus.PROCESS })
-            .then((orders: Order[]) => setProcessOrders(orders))
-            .catch()
-
-        orderSrevice
-            .getOrders({ ...orderInquiry, orderStatus: OrderStatus.FINISH })
-            .then((orders: Order[]) => setFinishedOrders(orders))
-            .catch()
-
-    }, [orderInquiry])
+            orderSrevice
+                .getOrders({ ...orderInquiry, orderStatus: OrderStatus.FINISH })
+                .then((orders: Order[]) => setFinishedOrders(orders))
+                .catch()
+        };
+    }, [orderInquiry, rebuildOrderData])
 
     /** HANDLERS **/
+    const paginationHandler = (e: T, page: number) => {
+        orderInquiry.page = page;
+        setOrderInquiry({ ...orderInquiry })
+    }
 
     const handleChange = (e: SyntheticEvent, newValue: string) => {
         setValue(newValue);
@@ -129,6 +134,7 @@ export default function OrdersPage() {
                                         color={"secondary"}
                                     />
                                 )}
+                                onChange={paginationHandler}
                             />
                         </Stack>
                     </TabContext>

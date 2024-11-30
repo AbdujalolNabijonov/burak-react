@@ -181,6 +181,9 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
         BackdropProps={{
           timeout: 500,
         }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleRequestLogin()
+        }}
       >
         <Fade in={loginOpen}>
           <Stack

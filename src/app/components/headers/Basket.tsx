@@ -28,7 +28,7 @@ export default function Basket(props: BasketProps) {
     onDelete,
     onDeleteAll
   } = props
-  const { authMember } = useGlobals();
+  const { authMember, setRebuildOrderData } = useGlobals();
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -52,6 +52,7 @@ export default function Basket(props: BasketProps) {
       await orderService.createOrder(cartItems);
 
       onDeleteAll()
+      setRebuildOrderData(new Date())
       history.push("/orders")
     } catch (err: any) {
       await sweetErrorHandling(err)
