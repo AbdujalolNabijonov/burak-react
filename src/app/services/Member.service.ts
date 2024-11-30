@@ -38,7 +38,7 @@ class MemberService {
             const url = `${this.server}/member/signup`;
             const response = await axios.post(url, memberInput, { withCredentials: true });
 
-            return response.data
+            return response.data.member
         } catch (err: any) {
             console.log(`Error: signup, ${err.message}`)
             throw err
@@ -51,7 +51,7 @@ class MemberService {
 
             const response = await axios.post(url, input, { withCredentials: true });
 
-            return response.data
+            return response.data.member
         } catch (err: any) {
             console.log(`Error: login, ${err.message}`)
             throw err

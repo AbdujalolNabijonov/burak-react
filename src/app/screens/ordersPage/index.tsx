@@ -1,5 +1,5 @@
 import { useState, SyntheticEvent, useEffect } from "react";
-import { Container, Stack, Box } from "@mui/material";
+import { Container, Stack, Box, Pagination, PaginationItem } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
@@ -8,6 +8,7 @@ import PausedOrders from "./PausedOrders";
 import ProcessOrders from "./ProcessOrders";
 import FinishedOrders from "./FinishedOrders";
 import "../../../css/orders.css"
+import { ArrowBack, ArrowForward } from "@mui/icons-material"
 
 
 //REDUX
@@ -16,6 +17,11 @@ import { Order, OrderInquiry } from "../../../lib/types/order.type";
 import { setFinishedOrders, setPausedOrders, setProcessOrders } from "./slice";
 import { useDispatch } from "react-redux";
 import { OrderStatus } from "../../../lib/enums/order.enum";
+import OrderService from "../../services/Order.service";
+import { useGlobals } from "../../hooks/useGlobals";
+import { server } from "../../../lib/config";
+import { MemberType } from "../../../lib/enums/member.enum";
+import { useHistory } from "react-router-dom";
 
 const actionsDispatch = (dispatch: Dispatch) => ({
     setPausedOrders: (orders: Order[]) => dispatch(setPausedOrders(orders)),
@@ -30,20 +36,59 @@ export default function OrdersPage() {
         limit: 3,
         orderStatus: OrderStatus.PAUSE
     })
+    const history = useHistory();
+
     const {
         setPausedOrders,
         setProcessOrders,
         setFinishedOrders
     } = actionsDispatch(useDispatch())
 
+    const { authMember } = useGlobals()
+
+    useEffect(() => {
+        if (!authMember) history.push("/");
+    }, [])
+
     useEffect(() => {
 
-    }, [])
+        const orderSrevice = new OrderService();
+        orderSrevice
+            .getOrders({ ...orderInquiry, orderStatus: OrderStatus.PAUSE })
+            .then((orders: Order[]) => setPausedOrders(orders))
+            .catch()
+
+        orderSrevice
+            .getOrders({ ...orderInquiry, orderStatus: OrderStatus.PROCESS })
+            .then((orders: Order[]) => setProcessOrders(orders))
+            .catch()
+
+        orderSrevice
+            .getOrders({ ...orderInquiry, orderStatus: OrderStatus.FINISH })
+            .then((orders: Order[]) => setFinishedOrders(orders))
+            .catch()
+
+    }, [orderInquiry])
 
     /** HANDLERS **/
 
     const handleChange = (e: SyntheticEvent, newValue: string) => {
         setValue(newValue);
+        switch (newValue || value) {
+            case "1":
+                orderInquiry.orderStatus = OrderStatus.PAUSE;
+                setOrderInquiry({ ...orderInquiry });
+                break;
+            case "2":
+                orderInquiry.orderStatus = OrderStatus.PROCESS;
+                setOrderInquiry({ ...orderInquiry })
+                break;
+            case "3":
+                setOrderInquiry({ ...orderInquiry, orderStatus: OrderStatus.FINISH });
+                break
+            default:
+                break
+        }
     };
 
     return (
@@ -70,6 +115,22 @@ export default function OrdersPage() {
                             <ProcessOrders setValue={setValue} />
                             <FinishedOrders />
                         </Stack>
+                        <Stack flexDirection={"row"} justifyContent={"center"}>
+                            <Pagination
+                                count={orderInquiry.page + 1}
+                                page={orderInquiry.page}
+                                renderItem={(item) => (
+                                    <PaginationItem
+                                        components={{
+                                            previous: ArrowBack,
+                                            next: ArrowForward,
+                                        }}
+                                        {...item}
+                                        color={"secondary"}
+                                    />
+                                )}
+                            />
+                        </Stack>
                     </TabContext>
                 </Stack>
 
@@ -78,19 +139,19 @@ export default function OrdersPage() {
                         <Box className={"member-box"}>
                             <div className={"order-user-img"}>
                                 <img
-                                    src={"/icons/default-user.svg"}
+                                    src={authMember?.memberImage ? `${server}/${authMember.memberImage?.replace(/\\/g, "/")}` : "/icons/default-user.svg"}
                                     className={"order-user-avatar"}
                                 />
                                 <div className={"order-user-icon-box"}>
                                     <img
-                                        src={"/icons/restaurant.svg"}
+                                        src={authMember?.memberType === MemberType.RESTAURANT ? "/icons/restaurant.svg" : "/icons/user-badge.svg"}
                                         className={"order-user-prof-img"}
                                     />
                                 </div>
                             </div>
                             <span className={"order-user-name"}>
                                 {" "}
-                                {"David"}
+                                {authMember?.memberNick}
                             </span>
                             <span className={"order-user-prof"}>
                                 {" "}

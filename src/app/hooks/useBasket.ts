@@ -9,13 +9,13 @@ function useBasket() {
     const onAdd = (item: CartItem) => {
         const exist = cartItems.find((ele: CartItem) => ele._id === item._id)
         if (exist) {
-            const cartUpdate = cartItems.map((ele: CartItem) => ele._id === item._id ? { ...ele, quantity: ele.quantity + 1 } : item);
+            const cartUpdate = cartItems.map((ele: CartItem) => ele._id === item._id ? { ...ele, quantity: ele.quantity + 1 } : ele);
             setCartItems(cartUpdate);
             localStorage.setItem("cartData", JSON.stringify(cartItems))
         } else {
             const cartUpdate = [...cartItems, item];
             setCartItems(cartUpdate);
-            localStorage.setItem("cartData", JSON.stringify(cartItems))
+            localStorage.setItem("cartData", JSON.stringify(cartUpdate))
         }
     }
 

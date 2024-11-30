@@ -7,36 +7,44 @@ import moment from "moment";
 import { createSelector } from "reselect"
 import { processOrdersRetriever } from "./selector";
 import { useSelector } from "react-redux";
+import { Order, OrderItem } from "../../../lib/types/order.type";
+import { Product } from "../../../lib/types/product.type";
+import { server } from "../../../lib/config";
 
 const processOrdersSelector = createSelector(
     processOrdersRetriever,
     (processOrders) => ({ processOrders })
 )
 
-export default function ProcessOrders(props: any) {
+interface ProcessOrdersProps {
+    setValue: (value: string) => void
+}
+
+export default function ProcessOrders(props: ProcessOrdersProps) {
     const { setValue } = props;
     const { processOrders } = useSelector(processOrdersSelector)
 
     return (
         <TabPanel value={"2"}>
             <Stack>
-                {processOrders?.map((order: any) => {
+                {processOrders?.map((order: Order) => {
                     return (
                         <Box key={order._id} className={"order-main-box"}>
                             <Box className={"order-box-scroll"}>
-                                {order?.orderItems?.map((item: any) => {
-                                    const imagePath = "/img/1.jpg";
+                                {order?.orderItems?.map((orderitem: OrderItem) => {
+                                    const product = order?.productsData?.filter((ele: Product) => ele._id === orderitem.productId)[0] as Product;
+                                    const imagePath = `${server}/${product.productImages[0].replace(/\\/g, "/")}`;
                                     return (
-                                        <Box key={item._id} className={"orders-name-price"}>
+                                        <Box key={orderitem._id} className={"orders-name-price"}>
                                             <img src={imagePath} className={"order-dish-img"} />
-                                            <p className={"title-dish"}>kebab</p>
+                                            <p className={"title-dish"}>{product.productName}</p>
                                             <Box className={"price-box"}>
-                                                <p>$13</p>
+                                                <p>${orderitem.itemPrice}</p>
                                                 <img src={"/icons/close.svg"} />
-                                                <p>3</p>
+                                                <p>{orderitem.itemQuantity}</p>
                                                 <img src={"/icons/pause.svg"} />
                                                 <p style={{ marginLeft: "15px" }}>
-                                                    $130
+                                                    ${orderitem.itemPrice * orderitem.itemQuantity}
                                                 </p>
                                             </Box>
                                         </Box>
@@ -47,10 +55,10 @@ export default function ProcessOrders(props: any) {
                             <Box className={"total-price-box"}>
                                 <Box className={"box-total"}>
                                     <p>Product price</p>
-                                    <p>$4</p>
+                                    <p>${order.orderItems?.reduce((a: number, ele: OrderItem) => a + ele.itemPrice * ele.itemQuantity, 0)}</p>
                                     <img src={"/icons/plus.svg"} style={{ marginLeft: "20px" }} />
                                     <p>delivery cost</p>
-                                    <p>$134</p>
+                                    <p>${order.orderDelivery}</p>
                                     <img
                                         src={"/icons/pause.svg"}
                                         style={{ marginLeft: "20px" }}
@@ -59,7 +67,7 @@ export default function ProcessOrders(props: any) {
                                     <p>${order.orderTotal}</p>
                                 </Box>
                                 <p className={"data-compl"}>
-                                    {moment().format("YY-MM-DD HH:mm")}
+                                    {moment(order.updatedAt).format("YY-MM-DD HH:mm")}
                                 </p>
                                 <Button
                                     value={order._id}

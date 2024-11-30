@@ -7,6 +7,9 @@ import TabPanel from "@mui/lab/TabPanel";
 import { createSelector } from "reselect";
 import { finishedOrdersRetriever } from "./selector";
 import { useSelector } from "react-redux";
+import { Order, OrderItem } from "../../../lib/types/order.type";
+import { Product } from "../../../lib/types/product.type";
+import { server } from "../../../lib/config";
 
 const finishedOrdersSelector = createSelector(
     finishedOrdersRetriever,
@@ -19,23 +22,24 @@ export default function FinishedOrders() {
     return (
         <TabPanel value={"3"}>
             <Stack>
-                {finishedOrders?.map((order: any) => {
+                {finishedOrders?.map((order: Order) => {
                     return (
                         <Box key={order._id} className={"order-main-box"}>
                             <Box className={"order-box-scroll"}>
-                                {order?.orderItems?.map((item: any) => {
-                                    const imagePath = "/img/1.jpg";
+                                {order?.orderItems?.map((orderItem: OrderItem) => {
+                                    const product = order?.productsData?.filter((ele: Product) => ele._id === orderItem.productId)[0] as Product;
+                                    const imagePath = `${server}/${product.productImages[0].replace(/\\/g, "/")}`;
                                     return (
-                                        <Box key={item._id} className={"orders-name-price"}>
+                                        <Box key={orderItem._id} className={"orders-name-price"}>
                                             <img src={imagePath} className={"order-dish-img"} />
-                                            <p className={"title-dish"}>Turkish steak</p>
+                                            <p className={"title-dish"}>{product.productName}</p>
                                             <Box className={"price-box"}>
-                                                <p>$20</p>
+                                                <p>${orderItem.itemPrice}</p>
                                                 <img src={"/icons/close.svg"} />
-                                                <p>2</p>
+                                                <p>{orderItem.itemQuantity}</p>
                                                 <img src={"/icons/pause.svg"} />
                                                 <p style={{ marginLeft: "15px" }}>
-                                                    $40
+                                                    ${orderItem.itemQuantity * orderItem.itemPrice}
                                                 </p>
                                             </Box>
                                         </Box>
@@ -46,16 +50,16 @@ export default function FinishedOrders() {
                             <Box className={"total-price-box"}>
                                 <Box className={"box-total"}>
                                     <p>Product price</p>
-                                    <p>$40</p>
+                                    <p>${order?.orderItems?.reduce((a: number, value: OrderItem) => a + value.itemPrice * value.itemQuantity, 0)}</p>
                                     <img src={"/icons/plus.svg"} style={{ marginLeft: "20px" }} />
                                     <p>Delivery cost</p>
-                                    <p>$4</p>
+                                    <p>${order.orderDelivery}</p>
                                     <img
                                         src={"/icons/pause.svg"}
                                         style={{ marginLeft: "20px" }}
                                     />
                                     <p>Total</p>
-                                    <p>$44</p>
+                                    <p>${order.orderTotal}</p>
                                 </Box>
                             </Box>
                         </Box>

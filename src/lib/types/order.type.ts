@@ -28,7 +28,7 @@ export interface Order {
     updatedAt: Date;
 
     orderItems?: OrderItem[],
-    productData?: Product[]
+    productsData?: Product[]
 }
 
 export interface OrderInput {

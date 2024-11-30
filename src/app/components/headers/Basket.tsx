@@ -7,8 +7,11 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useHistory } from "react-router-dom";
 import { CartItem } from "../../../lib/types/search.type";
-import { server } from "../../../lib/config";
+import { Message, server } from "../../../lib/config";
 import { DeleteForeverOutlined } from "@mui/icons-material";
+import { useGlobals } from "../../hooks/useGlobals";
+import { sweetErrorHandling } from "../../../lib/sweetAlert";
+import OrderService from "../../services/Order.service";
 
 interface BasketProps {
   cartItems: CartItem[];
@@ -25,7 +28,7 @@ export default function Basket(props: BasketProps) {
     onDelete,
     onDeleteAll
   } = props
-  const authMember = null;
+  const { authMember } = useGlobals();
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -40,6 +43,20 @@ export default function Basket(props: BasketProps) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleOrderProceed = async () => {
+    try {
+      if (!authMember) throw new Error(Message.error2)
+      handleClose()
+      const orderService = new OrderService();
+      await orderService.createOrder(cartItems);
+
+      onDeleteAll()
+      history.push("/orders")
+    } catch (err: any) {
+      await sweetErrorHandling(err)
+    }
+  }
 
   return (
     <Box className={"hover-line"}>
@@ -112,7 +129,7 @@ export default function Basket(props: BasketProps) {
                 cartItems.map((item: CartItem) => {
                   const imagePath = `${server}/${item.image.replace(/\\/g, "/")}`
                   return (
-                    <Box className={"basket-info-box"}>
+                    <Box className={"basket-info-box"} key={item._id}>
                       <div className={"cancel-btn"}>
                         <CancelIcon
                           color={"primary"}
@@ -150,7 +167,11 @@ export default function Basket(props: BasketProps) {
                 <span className={"price"}>Total: $0 (0 +0)</span>
               )
             }
-            <Button startIcon={<ShoppingCartIcon />} variant={"contained"}>
+            <Button
+              startIcon={<ShoppingCartIcon />}
+              variant={"contained"}
+              onClick={handleOrderProceed}
+            >
               Order
             </Button>
           </Box>
