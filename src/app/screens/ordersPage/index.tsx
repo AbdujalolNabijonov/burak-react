@@ -161,7 +161,7 @@ export default function OrdersPage() {
                             </span>
                             <span className={"order-user-prof"}>
                                 {" "}
-                                {"User"}
+                                {authMember?.memberType}
                             </span>
                         </Box>
                         <Box className={"liner"}></Box>
@@ -170,7 +170,7 @@ export default function OrdersPage() {
                                 <LocationOnIcon />
                             </div>
                             <div className={"spec-address-txt"}>
-                                {"Do not exist"}
+                                {authMember?.memberAddress ?? "Do not exist"}
                             </div>
                         </Box>
                     </Box>

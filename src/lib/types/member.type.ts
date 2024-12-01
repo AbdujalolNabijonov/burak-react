@@ -26,6 +26,17 @@ export interface MemberInput {
     memberDesc?: string
 }
 
+export interface MemberUpdateInput {
+    memberType?: MemberType;
+    memberStatus?: MemberStatus;
+    memberNick?: string;
+    memberPhone?: string;
+    memberPassword?: string;
+    memberImage?: HTMLElement | string;
+    memberAddress?: string;
+    memberDesc?: string;
+    memberPoints?: number;
+}
 export interface LoginInput {
     memberNick: string;
     memberPassword: string
