@@ -9,19 +9,22 @@ import './css/index.css';
 import theme from './app/MaterialTheme';
 import { BrowserRouter as Router } from "react-router-dom"
 import ContextProvider from './app/context/ContextProvider';
+import { SocketContextProvider } from './app/context/SocketContext';
 
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ContextProvider>
-        <Router>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <App />
-          </ThemeProvider>
-        </Router>
-      </ContextProvider>
+      <SocketContextProvider>
+        <ContextProvider>
+          <Router>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <App />
+            </ThemeProvider>
+          </Router>
+        </ContextProvider>
+      </SocketContextProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

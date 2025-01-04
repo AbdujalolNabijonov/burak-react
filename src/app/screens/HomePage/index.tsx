@@ -12,11 +12,12 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit"
 import { settopUsers, setNewDishes, setPopularDishes } from "./slice"
 import { Product } from "../../../lib/types/product.type"
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import ProductService from "../../services/Product.service"
 import { ProductCollection } from "../../../lib/enums/product.enum"
 import MemberService from "../../services/Member.service"
 import { Member } from "../../../lib/types/member.type"
+import { SocketContext } from "../../context/SocketContext"
 
 
 const dispatchAction = (dispatch: Dispatch) => ({
@@ -28,8 +29,14 @@ const dispatchAction = (dispatch: Dispatch) => ({
 
 const HomePage = (props: any) => {
     const { setPopularDishes, setNewDishes, settopUsers } = dispatchAction(useDispatch());
+    const socket = useContext(SocketContext)
 
     useEffect(() => {
+        socket?.connect()
+        socket?.on("info", (data) => {
+            console.log("data",data)
+        })
+
         const product = new ProductService();
         const member = new MemberService();
 
@@ -61,6 +68,10 @@ const HomePage = (props: any) => {
         member.getTopUsers()
             .then(data => settopUsers(data))
             .catch()
+
+        return () => {
+            socket?.disconnect()
+        }
     }, [])
 
     return (
