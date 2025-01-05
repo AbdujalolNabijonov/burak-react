@@ -6,5 +6,5 @@ git pull origin master
 npm i yarn -g
 yarn install
 yarn run build
-yarn run start:prod
+pm2 start "yarn run start:prod" --name=Burak-React
 #Development
