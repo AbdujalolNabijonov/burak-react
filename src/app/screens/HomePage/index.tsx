@@ -33,8 +33,8 @@ const HomePage = (props: any) => {
 
     useEffect(() => {
         socket?.connect()
-        socket?.on("info", (data) => {
-            console.log("data",data)
+        socket?.on("info", (data: any) => {
+            console.log("data", data)
         })
 
         const product = new ProductService();
